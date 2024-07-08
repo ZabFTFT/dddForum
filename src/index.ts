@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import Joi from "joi";
+import { User } from "./modules/user/domain/user";
 
 const app = express();
 app.use(express.json());
@@ -9,14 +10,6 @@ app.use(express.json());
 const port = process.env.PORT || 3000;
 
 const prisma = new PrismaClient();
-
-interface User {
-  email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-}
 
 const userSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -203,18 +196,6 @@ app.post(
     }
   }
 );
-
-// app.get("/users", async (req: Request, res: Response) => {
-//   const users = await prisma.user.findMany();
-//
-//   console.log(users);
-//
-//   await prisma.$disconnect();
-//
-//   return res.status(200).json({
-//     users: users,
-//   });
-// });
 
 app.get("/users", async (req: Request, res: Response) => {
   try {
