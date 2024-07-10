@@ -1,7 +1,15 @@
 import express, { NextFunction, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import Joi from "joi";
-import { User } from "./modules/user/domain/user";
+
+interface User {
+  id: number;
+  email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+}
 
 const app = express();
 app.use(express.json());
