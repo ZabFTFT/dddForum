@@ -52,9 +52,14 @@
   },
   "dependencies": {
     "@prisma/client": "^5.16.0",
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
     "express": "^4.19.2",
     "jest-cucumber": "^3.0.1",
     "joi": "^17.13.3",
-    "pg": "^8.12.0"
+    "moment": "^2.30.1",
+    "pg": "^8.12.0",
+    "react-router-dom": "^6.24.1",
+    "react-toastify": "^10.0.5"
   }
 }

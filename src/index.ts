@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+var cors = require("cors");
 import Joi from "joi";
 
 interface User {
@@ -13,9 +14,8 @@ interface User {
 
 const app = express();
 app.use(express.json());
-// INFO: Probably I should run some function with CORS settings
-// app.use(cors())
-const port = process.env.PORT || 3000;
+app.use(cors());
+const port = process.env.PORT || 8080;
 
 const prisma = new PrismaClient();
 
@@ -24,6 +24,7 @@ const userSchema = Joi.object({
   username: Joi.string().required(),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
+  password: Joi.string(),
 });
 
 const emailQuerySchema = Joi.object({
@@ -110,7 +111,7 @@ app.post("/users/new", validateUser, async (req: Request, res: Response) => {
     const user = await prisma.user.create({
       data: {
         ...userData,
-        password: generateRandomPassword(10),
+        password: userData.password || generateRandomPassword(10),
       },
     });
 

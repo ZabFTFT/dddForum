@@ -13,33 +13,35 @@ import { OverlaySpinner } from "../components/overlaySpinner";
 const api = {
   posts: {
     getPosts: () => {
-      return axios.get("<http://localhost:8080/posts?sort=recent>");
+      return axios.get("http://localhost:8080/posts?sort=recent>");
     },
   },
   register: (input: RegistrationInput) => {
-    return axios.post("<http://localhost:8080/users/new>", {
+    return axios.post("http://localhost:8080/users/new", {
       ...input,
     });
   },
 };
 
 export const RegistrationPage = () => {
+  const { setUser } = useUser();
+  const spinner = useSpinner();
+  const navigate = useNavigate();
+
   const handleSubmitRegistrationForm = async (input: RegistrationInput) => {
-    const { setUser } = useUser();
-    const spinner = useSpinner();
-    const navigate = useNavigate();
     try {
       const validationResult = validateForm(input);
 
       if (validationResult.success !== true) {
         showErrorToast(validationResult.errorMessage || "Invalid data");
+        return;
       }
 
       spinner.activate();
 
       const registerResult = await registerUser(input);
 
-      if (registerResult.success) {
+      if (registerResult.success === true) {
         setUser(registerResult.user);
 
         showSuccessToast("Registration successful!");
@@ -67,6 +69,7 @@ export const RegistrationPage = () => {
           handleSubmitRegistrationForm(input)
         }
       />
+      <OverlaySpinner isActive={spinner.spinner?.isActive} />
     </Layout>
   );
 };
@@ -79,7 +82,7 @@ type ValidationResult = {
 const validateForm = (input: RegistrationInput): ValidationResult => {
   if (input.email.indexOf("@") === -1)
     return { success: false, errorMessage: "Email invalid" };
-  if (input.username.length < 2)
+  if (input.username.length < 4)
     return { success: false, errorMessage: "Username invalid" };
 
   return { success: true };
@@ -93,10 +96,9 @@ interface RegisterResult {
 const registerUser = async (
   input: RegistrationInput
 ): Promise<RegisterResult> => {
-  // Implement API call to register user
   const res = await api.register(input);
 
-  if (res.status === 200) {
+  if (res.status === 201) {
     return { success: true, user: input };
   }
 
