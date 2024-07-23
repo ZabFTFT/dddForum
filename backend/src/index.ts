@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cors());
 const port = process.env.PORT || 8080;
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 const userSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -108,14 +108,16 @@ app.post("/users/new", validateUser, async (req: Request, res: Response) => {
       });
     }
 
-    const user = await prisma.user.create({
-      data: {
-        ...userData,
-        password: userData.password || generateRandomPassword(10),
-      },
+    const { user, member } = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: { ...userData, password: generateRandomPassword(10) },
+      });
+      const member = await tx.member.create({ data: { userId: user.id } });
+      return { user, member };
     });
 
-    console.log(user);
+    console.log("Created user:", user);
+    console.log("Created member:", member);
 
     await prisma.$disconnect();
 
