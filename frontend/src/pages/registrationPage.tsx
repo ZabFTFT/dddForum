@@ -10,12 +10,11 @@ import { useUser } from "../contexts/usersContext";
 import { useNavigate } from "react-router-dom";
 import { OverlaySpinner } from "../components/overlaySpinner";
 
-const api = {
-  posts: {
-    getPosts: () => {
-      return axios.get("http://localhost:8080/posts?sort=recent>");
-    },
+export const api = {
+  getPosts: () => {
+    return axios.get("http://localhost:8080/posts?sort=recent");
   },
+
   register: (input: RegistrationInput) => {
     return axios.post("http://localhost:8080/users/new", {
       ...input,
@@ -94,7 +93,7 @@ interface RegisterResult {
 }
 
 const registerUser = async (
-  input: RegistrationInput
+  input: RegistrationInput,
 ): Promise<RegisterResult> => {
   const res = await api.register(input);
 

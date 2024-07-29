@@ -25,17 +25,15 @@ export const PostsList = ({ posts }: { posts: Post[] }) => (
     {posts.map((post, key) => (
       <div className="post-item" key={key}>
         <div className="post-item-votes">
-          <div className="post-item-upvote"></div>
           <div>{computeVoteCount(post.votes)}</div>
-          <div className="post-item-downvote"></div>
         </div>
         <div className="post-item-content">
           <div className="post-item-title">{post.title}</div>
           <div className="post-item-details">
             <div>{moment(post.dateCreated).fromNow()}</div>
-            {/* <Link to={`/member/${post.memberPostedBy.user.username}`}> */}
-            {/*   by {post.memberPostedBy.user.username} */}
-            {/* </Link> */}
+            <Link to={`/member/${post.memberPostedBy.user.username}`}>
+              by {post.memberPostedBy.user.username}
+            </Link>
             <div>
               {post.comments.length}{" "}
               {post.comments.length !== 1 ? `comments` : "comment"}
